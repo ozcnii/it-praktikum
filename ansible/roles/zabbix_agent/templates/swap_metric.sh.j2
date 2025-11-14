@@ -1,0 +1,15 @@
+#!/bin/bash
+# Swap Usage Metric for {{ username }}
+
+# Get swap usage percentage
+total_swap=$(free | grep Swap | awk '{print $2}')
+used_swap=$(free | grep Swap | awk '{print $3}')
+
+# If swap is 0, return 0
+if [ "$total_swap" -eq 0 ]; then
+    echo "0.00"
+else
+    swap_usage=$(awk "BEGIN {printf \"%.2f\", ($used_swap/$total_swap)*100}")
+    echo "$swap_usage"
+fi
+

@@ -1,0 +1,8 @@
+#!/bin/bash
+# CPU Load Metric for {{ username }}
+
+# Get CPU load average (1 minute)
+cpu_load=$(uptime | awk -F'load average:' '{ print $2 }' | cut -d, -f1 | xargs)
+
+echo "$cpu_load"
+

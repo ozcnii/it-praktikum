@@ -1,0 +1,101 @@
+---
+- name: Install locales package
+  package:
+    name: locales
+    state: present
+
+- name: Generate en_US.UTF-8 locale
+  shell: locale-gen en_US.UTF-8
+  args:
+    creates: /usr/lib/locale/en_US.UTF-8
+
+- name: Set system locale to en_US.UTF-8
+  lineinfile:
+    path: /etc/default/locale
+    regexp: "^LANG="
+    line: "LANG=en_US.UTF-8"
+    state: present
+
+- name: Install Midnight Commander
+  package:
+    name: mc
+    state: present
+
+- name: Create team22 directory
+  file:
+    path: /srv/team22/{{ username }}_zabbix
+    state: directory
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Install Zabbix Agent
+  package:
+    name: zabbix-agent
+    state: present
+
+- name: Copy Zabbix Agent configuration
+  template:
+    src: zabbix_agentd.conf.j2
+    dest: /etc/zabbix/zabbix_agentd.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart zabbix-agent
+
+- name: Copy custom metric script
+  template:
+    src: "{{ metric_type }}_metric.sh.j2"
+    dest: /srv/team22/{{ username }}_zabbix/{{ metric_type }}_metric.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy metric collection script
+  template:
+    src: collect_metrics.sh.j2
+    dest: /srv/team22/{{ username }}_zabbix/collect_metrics.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy PostgreSQL connection script
+  template:
+    src: save_to_postgresql.sh.j2
+    dest: /srv/team22/{{ username }}_zabbix/save_to_postgresql.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install PostgreSQL client
+  package:
+    name: postgresql-client
+    state: present
+
+- name: Copy SQL table creation script
+  template:
+    src: create_table.sql.j2
+    dest: /srv/team22/{{ username }}_zabbix/create_table.sql
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Create PostgreSQL table
+  shell: |
+    PGPASSWORD={{ postgresql_password }} psql -h {{ postgresql_host }} -U {{ postgresql_user }} -d {{ postgresql_database }} -f /srv/team22/{{ username }}_zabbix/create_table.sql
+  args:
+    creates: /srv/team22/{{ username }}_zabbix/.table_created
+  register: create_table_result
+  changed_when: create_table_result.rc == 0
+
+- name: Mark table as created
+  file:
+    path: /srv/team22/{{ username }}_zabbix/.table_created
+    state: touch
+  when: create_table_result.rc == 0
+
+- name: Enable and start Zabbix Agent
+  systemd:
+    name: zabbix-agent
+    enabled: yes
+    state: started

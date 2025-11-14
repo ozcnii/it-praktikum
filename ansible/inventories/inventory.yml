@@ -1,0 +1,28 @@
+all:
+  children:
+    team22:
+      hosts:
+        student1:
+          ansible_host: 192.168.1.10
+          username: user1
+          metric_type: cpu
+        student2:
+          ansible_host: 192.168.1.11
+          username: user2
+          metric_type: ram
+        student3:
+          ansible_host: 192.168.1.12
+          username: user3
+          metric_type: disk
+        student4:
+          ansible_host: 192.168.1.13
+          username: user4
+          metric_type: network
+        student5:
+          ansible_host: 192.168.1.14
+          username: user5
+          metric_type: processes
+        student6:
+          ansible_host: 192.168.1.15
+          username: user6
+          metric_type: swap

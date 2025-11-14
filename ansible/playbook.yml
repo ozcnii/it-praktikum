@@ -1,0 +1,14 @@
+---
+- name: Deploy Zabbix Agent and configure metrics
+  hosts: all
+  become: yes
+  vars:
+    zabbix_server: "127.0.0.1"  # Change to your Zabbix Server IP
+    postgresql_host: "localhost"
+    postgresql_user: "postgres"
+    postgresql_password: "postgres"  # Change to your PostgreSQL password
+    postgresql_database: "zabbix_metrics"
+  
+  roles:
+    - zabbix_agent
+

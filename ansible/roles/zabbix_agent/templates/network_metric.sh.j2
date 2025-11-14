@@ -1,0 +1,8 @@
+#!/bin/bash
+# Network Connections Metric for {{ username }}
+
+# Get number of established network connections
+network_connections=$(netstat -an | grep ESTABLISHED | wc -l)
+
+echo "$network_connections"
+

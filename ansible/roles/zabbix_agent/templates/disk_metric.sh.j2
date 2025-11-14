@@ -1,0 +1,11 @@
+#!/bin/bash
+# Disk Availability Metric for {{ username }}
+
+# Get disk usage percentage for root filesystem
+disk_usage=$(df -h / | tail -1 | awk '{print $5}' | sed 's/%//')
+
+# Calculate availability (100 - usage)
+disk_availability=$((100 - disk_usage))
+
+echo "$disk_availability"
+

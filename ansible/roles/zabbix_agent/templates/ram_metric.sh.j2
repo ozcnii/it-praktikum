@@ -1,0 +1,10 @@
+#!/bin/bash
+# RAM Usage Metric for {{ username }}
+
+# Get RAM usage percentage
+total_mem=$(free | grep Mem | awk '{print $2}')
+used_mem=$(free | grep Mem | awk '{print $3}')
+ram_usage=$(awk "BEGIN {printf \"%.2f\", ($used_mem/$total_mem)*100}")
+
+echo "$ram_usage"
+

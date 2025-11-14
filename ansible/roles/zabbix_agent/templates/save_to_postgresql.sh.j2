@@ -1,0 +1,29 @@
+#!/bin/bash
+# Save metrics to PostgreSQL for {{ username }}
+
+METRIC_TYPE=$1
+METRIC_VALUE=$2
+TIMESTAMP=$3
+
+PGHOST="{{ postgresql_host }}"
+PGUSER="{{ postgresql_user }}"
+PGPASSWORD="{{ postgresql_password }}"
+PGDATABASE="{{ postgresql_database }}"
+TABLE_NAME="{{ username }}_zabbix"
+
+# Validate inputs
+if [ -z "$METRIC_TYPE" ] || [ -z "$METRIC_VALUE" ] || [ -z "$TIMESTAMP" ]; then
+    echo "Error: Missing required parameters" >&2
+    exit 1
+fi
+
+# Insert metric into PostgreSQL
+export PGPASSWORD
+psql -h "$PGHOST" -U "$PGUSER" -d "$PGDATABASE" -c \
+  "INSERT INTO $TABLE_NAME (timestamp, metric_type, metric_value) VALUES ('$TIMESTAMP', '$METRIC_TYPE', '$METRIC_VALUE');" \
+  >/dev/null 2>&1
+
+if [ $? -ne 0 ]; then
+    echo "Warning: Failed to save metric to PostgreSQL" >&2
+fi
+

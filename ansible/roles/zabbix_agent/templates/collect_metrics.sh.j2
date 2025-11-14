@@ -1,0 +1,20 @@
+#!/bin/bash
+# Metric Collection Script for {{ username }}
+# Metric Type: {{ metric_type }}
+
+METRIC_TYPE="{{ metric_type }}"
+METRIC_SCRIPT="/srv/team22/{{ username }}_zabbix/${METRIC_TYPE}_metric.sh"
+OUTPUT_FILE="/srv/team22/{{ username }}_zabbix/metrics_output.txt"
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+
+# Collect metric value
+METRIC_VALUE=$($METRIC_SCRIPT)
+
+# Log to file
+echo "[$TIMESTAMP] $METRIC_TYPE: $METRIC_VALUE" >> "$OUTPUT_FILE"
+
+# Save to PostgreSQL
+/srv/team22/{{ username }}_zabbix/save_to_postgresql.sh "$METRIC_TYPE" "$METRIC_VALUE" "$TIMESTAMP"
+
+echo "$METRIC_VALUE"
+

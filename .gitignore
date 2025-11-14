@@ -1,0 +1,11 @@
+*.log
+*.swp
+*.swo
+*~
+.DS_Store
+.vscode/
+.idea/
+*.retry
+ansible.cfg.local
+inventory.local.yml
+

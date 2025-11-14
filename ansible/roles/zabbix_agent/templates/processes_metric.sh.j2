@@ -1,0 +1,11 @@
+#!/bin/bash
+# Processes Metric for {{ username }}
+
+# Get total number of running processes
+process_count=$(ps aux | wc -l)
+
+# Subtract 1 for header line
+process_count=$((process_count - 1))
+
+echo "$process_count"
+

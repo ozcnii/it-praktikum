@@ -1,0 +1,50 @@
+# Requirements for Zabbix Agent Deployment Project
+
+## System Requirements
+- Debian/Ubuntu Linux
+- Python 3.6+
+- SSH access to target servers
+
+## Ansible Requirements
+- Ansible >= 2.9
+- ansible-core >= 2.12 (recommended)
+
+## PostgreSQL Requirements
+- PostgreSQL >= 12
+- PostgreSQL client tools (psql)
+
+## Zabbix Requirements
+- Zabbix Server (for testing)
+- Zabbix Agent (will be installed by Ansible)
+
+## Python Packages (for Ansible)
+- No additional Python packages required (Ansible uses system Python)
+
+## Installation
+
+### Install Ansible
+```bash
+# Debian/Ubuntu
+sudo apt-get update
+sudo apt-get install ansible
+
+# Or via pip
+pip install ansible
+```
+
+### Install PostgreSQL
+```bash
+# Debian/Ubuntu
+sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+```
+
+### Install Zabbix Get (for testing)
+```bash
+# Debian/Ubuntu
+sudo apt-get update
+sudo apt-get install zabbix-get
+```
+
