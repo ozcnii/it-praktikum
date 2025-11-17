@@ -22,6 +22,7 @@ sudo apt update && sudo apt install mc -y
 ```
 
 Проверка установки:
+
 ```bash
 mc --version
 ```
@@ -35,6 +36,7 @@ export LANG=en_US.UTF-8
 ```
 
 Проверка:
+
 ```bash
 locale
 ```
@@ -76,6 +78,7 @@ zabbix_agentd --version
 ### 4.1. Создание скрипта метрики
 
 Выберите тип метрики в зависимости от вашего номера:
+
 - **user1** - CPU Load
 - **user2** - RAM Usage
 - **user3** - Disk Availability
@@ -90,6 +93,7 @@ sudo nano /srv/team22/user1_zabbix/cpu_metric.sh
 ```
 
 Содержимое:
+
 ```bash
 #!/bin/bash
 # CPU Load Metric for user1
@@ -105,6 +109,7 @@ sudo nano /srv/team22/user6_zabbix/swap_metric.sh
 ```
 
 Содержимое:
+
 ```bash
 #!/bin/bash
 # Swap Usage Metric for user6
@@ -121,11 +126,13 @@ fi
 ```
 
 Сделайте скрипт исполняемым:
+
 ```bash
 sudo chmod +x /srv/team22/user1_zabbix/cpu_metric.sh
 ```
 
 Проверка:
+
 ```bash
 /srv/team22/user1_zabbix/cpu_metric.sh
 ```
@@ -133,6 +140,7 @@ sudo chmod +x /srv/team22/user1_zabbix/cpu_metric.sh
 ### 4.2. Настройка Zabbix Agent
 
 Отредактируйте конфигурацию:
+
 ```bash
 sudo nano /etc/zabbix/zabbix_agentd.conf
 ```
@@ -163,6 +171,7 @@ sudo zabbix_agentd -t user1.cpu
 ```
 
 Или через zabbix_get (если установлен):
+
 ```bash
 zabbix_get -s 127.0.0.1 -k user1.cpu
 ```
@@ -184,6 +193,7 @@ sudo -u postgres psql
 ```
 
 В psql выполните:
+
 ```sql
 CREATE DATABASE zabbix_metrics;
 \c zabbix_metrics
@@ -197,6 +207,7 @@ sudo -u postgres psql -d zabbix_metrics
 ```
 
 Создайте таблицу для вашего пользователя:
+
 ```sql
 CREATE TABLE user1_zabbix (
     id SERIAL PRIMARY KEY,
@@ -226,6 +237,7 @@ sudo nano /srv/team22/user1_zabbix/collect_metrics.sh
 ```
 
 Содержимое:
+
 ```bash
 #!/bin/bash
 METRIC_TYPE="cpu"
@@ -244,6 +256,7 @@ echo "$METRIC_VALUE"
 ```
 
 Сделайте исполняемым:
+
 ```bash
 sudo chmod +x /srv/team22/user1_zabbix/collect_metrics.sh
 ```
@@ -256,6 +269,7 @@ cat /srv/team22/user1_zabbix/metrics_output.txt
 ```
 
 Проверка в PostgreSQL:
+
 ```bash
 sudo -u postgres psql -d zabbix_metrics -c "SELECT * FROM user1_zabbix ORDER BY timestamp DESC LIMIT 5;"
 ```
@@ -269,11 +283,13 @@ sudo crontab -e
 ```
 
 Добавьте строку (каждые 5 минут):
+
 ```
 */5 * * * * /srv/team22/user1_zabbix/collect_metrics.sh
 ```
 
 Проверка:
+
 ```bash
 sudo crontab -l
 ```
@@ -312,4 +328,3 @@ tail -20 /var/log/zabbix/zabbix_agentd.log
 - Замените `cpu` на ваш тип метрики
 - Замените пароли PostgreSQL на безопасные
 - Настройте правильный IP Zabbix Server
-
