@@ -236,8 +236,8 @@ TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 METRIC_VALUE=$($METRIC_SCRIPT)
 echo "[$TIMESTAMP] $METRIC_TYPE: $METRIC_VALUE" >> "$OUTPUT_FILE"
 
-# Save to PostgreSQL
-PGPASSWORD=postgres psql -h localhost -U postgres -d zabbix_metrics -c \
+# Save to PostgreSQL (using peer authentication via sudo)
+sudo -u postgres psql -d zabbix_metrics -c \
   "INSERT INTO user1_zabbix (timestamp, metric_type, metric_value) VALUES ('$TIMESTAMP', '$METRIC_TYPE', '$METRIC_VALUE');"
 
 echo "$METRIC_VALUE"

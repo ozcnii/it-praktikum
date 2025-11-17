@@ -329,8 +329,7 @@ TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 METRIC_VALUE=$($METRIC_SCRIPT)
 echo "[$TIMESTAMP] $METRIC_TYPE: $METRIC_VALUE" >> "$OUTPUT_FILE"
 
-# Save to PostgreSQL
-PGPASSWORD=postgres psql -h localhost -U postgres -d zabbix_metrics -c \
+sudo -u postgres psql -d zabbix_metrics -c \
   "INSERT INTO userX_zabbix (timestamp, metric_type, metric_value) VALUES ('$TIMESTAMP', '$METRIC_TYPE', '$METRIC_VALUE');"
 
 echo "$METRIC_VALUE"
@@ -359,6 +358,15 @@ sudo -u postgres psql -d zabbix_metrics -c "SELECT * FROM userX_zabbix ORDER BY 
 ```bash
 cat /srv/team22/userX_zabbix/metrics_output.txt
 ```
+
+**Примечание:** Если возникает ошибка аутентификации PostgreSQL, убедитесь, что:
+
+1. Скрипт использует `sudo -u postgres` (peer authentication) - это предпочтительный метод
+2. Если необходимо использовать пароль, замените строку на:
+   ```bash
+   PGPASSWORD=ваш_пароль psql -h localhost -U postgres -d zabbix_metrics -c "..."
+   ```
+3. Или настройте `.pgpass` файл для безопасного хранения пароля
 
 ### 📸 Скриншоты:
 
